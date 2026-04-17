@@ -50,6 +50,7 @@
 - [Eigene Projekte](./eigene-projekte/)
   - [N8N CVE Monitor](./eigene-projekte/cve-monitor/n8n-cve-monitor.md)
   - [Mentat Network Monitor](./eigene-projekte/network-monitor/n8n-network-monitor.md)
+    - [network-monitor.sh — Shell Skript](./eigene-projekte/network-monitor/network-monitor.sh)
   - [Mentat — Persönlicher Offline-KI-Assistent](./eigene-projekte/mentat-ai/README.md)
     - [BUILDING.md — Der Weg dorthin](./eigene-projekte/mentat-ai/BUILDING.md)
     - [mentat.py — Text-Chat Script](./eigene-projekte/mentat-ai/mentat.py)
@@ -57,6 +58,9 @@
     - [mentat_text.py — Text-Chat Script für Tower](./eigene-projekte/mentat-ai/mentat_text.py)
     - [mentat_web.py — Web Interface (iPhone/Browser via Tailscale)](./eigene-projekte/mentat-ai/mentat_web.py)
   - [QNAP TS-216G Backup System](./eigene-projekte/qnap-ts216g-backup-system/nas-setup.md)
+    - [backup-tower.sh — Tower Backup Skript](./eigene-projekte/qnap-ts216g-backup-system/backup-tower.sh)
+    - [backup-mentat.sh — mentat-ai-node Backup Skript](./eigene-projekte/qnap-ts216g-backup-system/backup-mentat.sh)
+    - [backup-kali.sh — Kali-Pi Backup Skript](./eigene-projekte/qnap-ts216g-backup-system/backup-kali.sh)
 
 ---
 

@@ -1,0 +1,7 @@
+[
+  {"ip": "192.168.0.X",   "mac": "<ROUTER_MAC>",      "name": "Router"},
+  {"ip": "192.168.0.X",   "mac": "<TOWER_MAC>",        "name": "Tower"},
+  {"ip": "192.168.0.X",   "mac": "<KALI_MAC>",         "name": "Kali-Pi"},
+  {"ip": "192.168.0.X",   "mac": "<NODE_MAC>",         "name": "mentat-ai-node"},
+  {"ip": "192.168.0.X",   "mac": "<NAS_MAC>",          "name": "MentatVault-NAS"}
+]
