@@ -1,4 +1,8 @@
-# 🏠 Home Lab Setup
+<p align="center">
+  <img src="./banner.svg" alt="RootForge Banner"/>
+</p>
+
+> Homelab für IT-Security, Pentesting und FISI-Ausbildung. Praxisnah, dokumentiert, open source.
 
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![Kali Linux](https://img.shields.io/badge/OS-Kali%20Linux-557C94?logo=kalilinux)
@@ -11,8 +15,7 @@
 ![TryHackMe](https://img.shields.io/badge/learning-TryHackMe-212C42?logo=tryhackme)
 ![RPi](https://img.shields.io/badge/hardware-Raspberry%20Pi%205-C51A4A?logo=raspberrypi)
 ![NVIDIA](https://img.shields.io/badge/GPU-RTX%203070-76B900?logo=nvidia)
-
-Dokumentation meines persönlichen Home Labs — aufgebaut für Ethical Hacking, Pentesting, FISI-Ausbildung und allgemeine IT-Praxis.
+![QNAP](https://img.shields.io/badge/NAS-QNAP%20TS--216G-005BAC?logo=qnap)
 
 ---
 
@@ -24,6 +27,7 @@ Dokumentation meines persönlichen Home Labs — aufgebaut für Ethical Hacking,
 | Raspberry Pi 5 (8GB RAM) | Kali Linux | Hacking Station, Server |
 | mentat-ai-node (RPi 5 + Hailo-10H) | Raspberry Pi OS Lite | Lokaler AI-Node, Mentat-Körper |
 | Huawei Laptop | Windows 11 + Kali Live USB | Schule, FISI, Pentesting |
+| QNAP TS-216G | QTS 5.2 | NAS, Backup, RAID 1 |
 
 ---
 
@@ -52,6 +56,7 @@ Dokumentation meines persönlichen Home Labs — aufgebaut für Ethical Hacking,
     - [mentat_voice.py — Voice-Chat Script](./eigene-projekte/mentat-ai/mentat_voice.py)
     - [mentat_text.py — Text-Chat Script für Tower](./eigene-projekte/mentat-ai/mentat_text.py)
     - [mentat_web.py — Web Interface (iPhone/Browser via Tailscale)](./eigene-projekte/mentat-ai/mentat_web.py)
+  - [QNAP TS-216G Backup System](./eigene-projekte/qnap-ts216g-backup-system/README.md)
 
 ---
 
@@ -63,7 +68,7 @@ Vorbereitung auf Praktikum bei BerlinCert (IT-Security/Pentesting) und langfrist
 
 ## Tools & Technologien
 
-`Kali Linux` `Nobara Linux` `Docker` `N8N` `Hailo-10H` `Metasploit` `Burp Suite` `DVWA` `Tailscale` `Samba` `TryHackMe` `Pwnagotchi` `Bettercap` `Tor` `nmap` `arp-scan` `Ollama` `llama3.1:8b` `MemPalace` `SearXNG` `Flask` `Whisper` `Piper TTS` `openwakeword`
+`Kali Linux` `Nobara Linux` `Docker` `N8N` `Hailo-10H` `Metasploit` `Burp Suite` `DVWA` `Tailscale` `Samba` `TryHackMe` `Bettercap` `Tor` `nmap` `arp-scan` `Ollama` `llama3.1:8b` `MemPalace` `SearXNG` `Flask` `Whisper` `Piper TTS` `openwakeword` `rsync` `QNAP QTS` `Wake-on-LAN`
 
 ---
 
