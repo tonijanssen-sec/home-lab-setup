@@ -56,7 +56,7 @@
     - [mentat_voice.py — Voice-Chat Script](./eigene-projekte/mentat-ai/mentat_voice.py)
     - [mentat_text.py — Text-Chat Script für Tower](./eigene-projekte/mentat-ai/mentat_text.py)
     - [mentat_web.py — Web Interface (iPhone/Browser via Tailscale)](./eigene-projekte/mentat-ai/mentat_web.py)
-  - [QNAP TS-216G Backup System](./eigene-projekte/qnap-ts216g-backup-system/README.md)
+  - [QNAP TS-216G Backup System](./eigene-projekte/qnap-ts216g-backup-system/nas-setup.md)
 
 ---
 
