@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./mentat-banner.svg" alt="Mentat Banner"/>
+</p>
+
 #  Mentat — Persönlicher Offline-KI-Assistent
 
 ![Status](https://img.shields.io/badge/status-active-brightgreen)

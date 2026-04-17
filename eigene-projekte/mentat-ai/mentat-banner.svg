@@ -1,0 +1,86 @@
+<svg width="100%" viewBox="0 0 680 160" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>Mentat Banner</title>
+<desc>Pixel art arcade style banner for Mentat offline AI assistant</desc>
+
+<rect x="0" y="0" width="680" height="160" rx="4" fill="#070712"/>
+<rect x="2" y="2" width="676" height="156" rx="3" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
+<rect x="6" y="6" width="668" height="148" rx="2" fill="none" stroke="#7c3aed40" stroke-width="0.5"/>
+
+<pattern id="pg2" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+  <rect x="0" y="0" width="1" height="1" fill="#7c3aed08"/>
+</pattern>
+<rect x="0" y="0" width="680" height="160" fill="url(#pg2)"/>
+
+<!-- Corner decorations -->
+<rect x="10" y="10" width="12" height="4" fill="#7c3aed"/>
+<rect x="10" y="10" width="4" height="12" fill="#7c3aed"/>
+<rect x="658" y="10" width="12" height="4" fill="#7c3aed"/>
+<rect x="666" y="10" width="4" height="12" fill="#7c3aed"/>
+<rect x="10" y="146" width="12" height="4" fill="#7c3aed"/>
+<rect x="10" y="134" width="4" height="12" fill="#7c3aed"/>
+<rect x="658" y="146" width="12" height="4" fill="#7c3aed"/>
+<rect x="666" y="134" width="4" height="12" fill="#7c3aed"/>
+
+<!-- M -->
+<rect x="40" y="36" width="4" height="28" fill="#a855f7"/>
+<rect x="44" y="40" width="4" height="4" fill="#a855f7"/>
+<rect x="48" y="44" width="4" height="4" fill="#a855f7"/>
+<rect x="52" y="40" width="4" height="4" fill="#a855f7"/>
+<rect x="56" y="36" width="4" height="28" fill="#a855f7"/>
+<!-- E -->
+<rect x="68" y="36" width="4" height="28" fill="#a855f7"/>
+<rect x="72" y="36" width="16" height="4" fill="#a855f7"/>
+<rect x="72" y="48" width="12" height="4" fill="#a855f7"/>
+<rect x="72" y="60" width="16" height="4" fill="#a855f7"/>
+<!-- N -->
+<rect x="96" y="36" width="4" height="28" fill="#a855f7"/>
+<rect x="100" y="40" width="4" height="4" fill="#a855f7"/>
+<rect x="104" y="44" width="4" height="4" fill="#a855f7"/>
+<rect x="108" y="48" width="4" height="4" fill="#a855f7"/>
+<rect x="112" y="36" width="4" height="28" fill="#a855f7"/>
+<!-- T -->
+<rect x="124" y="36" width="24" height="4" fill="#a855f7"/>
+<rect x="134" y="40" width="4" height="24" fill="#a855f7"/>
+<!-- A -->
+<rect x="156" y="40" width="4" height="24" fill="#a855f7"/>
+<rect x="176" y="40" width="4" height="24" fill="#a855f7"/>
+<rect x="160" y="36" width="16" height="4" fill="#a855f7"/>
+<rect x="160" y="48" width="16" height="4" fill="#a855f7"/>
+<!-- T -->
+<rect x="188" y="36" width="24" height="4" fill="#a855f7"/>
+<rect x="198" y="40" width="4" height="24" fill="#a855f7"/>
+
+<!-- Divider -->
+<rect x="224" y="36" width="2" height="28" fill="#7c3aed40"/>
+
+<!-- Subtext -->
+<text x="236" y="52" font-family="monospace" font-size="11" fill="#a855f7">Offline AI Assistant</text>
+<text x="236" y="66" font-family="monospace" font-size="10" fill="#a855f799">RPi5 + Hailo-10H · local · private</text>
+
+<!-- Palace indicator -->
+<circle cx="236" cy="88" r="3" fill="#a855f7"/>
+<text x="245" y="92" font-family="monospace" font-size="9" fill="#a855f7">PALACE ONLINE</text>
+
+<!-- Bottom tagline -->
+<text x="340" y="115" font-family="monospace" font-size="10" fill="#7c3aed99" text-anchor="middle">Not a tool. A partner.</text>
+
+<!-- MEMORY ACTIVE -->
+<text x="340" y="135" font-family="monospace" font-size="9" fill="#a855f7" text-anchor="middle">[ MEMORY ACTIVE ]</text>
+
+<!-- Right side -->
+<text x="640" y="46" font-family="monospace" font-size="9" fill="#7c3aed99" text-anchor="end">MODEL</text>
+<text x="640" y="58" font-family="monospace" font-size="10" fill="#a855f7" text-anchor="end">llama3.2:3b</text>
+<text x="640" y="72" font-family="monospace" font-size="9" fill="#7c3aed99" text-anchor="end">BERLIN</text>
+
+<!-- Pixel dots -->
+<rect x="40" y="120" width="4" height="4" fill="#7c3aed40"/>
+<rect x="48" y="120" width="4" height="4" fill="#7c3aed66"/>
+<rect x="56" y="120" width="4" height="4" fill="#a855f7"/>
+<rect x="64" y="120" width="4" height="4" fill="#7c3aed66"/>
+<rect x="72" y="120" width="4" height="4" fill="#7c3aed40"/>
+<rect x="600" y="120" width="4" height="4" fill="#7c3aed40"/>
+<rect x="608" y="120" width="4" height="4" fill="#7c3aed66"/>
+<rect x="616" y="120" width="4" height="4" fill="#a855f7"/>
+<rect x="624" y="120" width="4" height="4" fill="#7c3aed66"/>
+<rect x="632" y="120" width="4" height="4" fill="#7c3aed40"/>
+</svg>
