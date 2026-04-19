@@ -18,7 +18,7 @@ Das Ziel: Eine Art von Jarvis. Komplett lokal. Auf eigener Hardware. Unter eigen
 
 Die Entscheidung für den Stack kam aus dem was bereits vorhanden war:
 
-- **Tower** (i7-12700F, 32GB, RTX 3070) — stark genug für llama3.1:8b via Ollama, CUDA für Whisper
+- **Tower** (i7-12700F, 32GB, RTX 3070) — stark genug für JOSIEFIED-Qwen3:8b via Ollama, CUDA für Whisper
 - **Raspberry Pi 5 (8GB) + Hailo-10H NPU** — der "Körper", 40 TOPS für leichte Inferenz, stromsparend für 24/7-Betrieb
 - **Kali-Pi** — separat, für Security-Übungen, DVWA
 
@@ -30,7 +30,7 @@ Der Tower wurde von Windows zu Nobara KDE 43 migriert — bewusste Entscheidung,
 
 ### Was funktioniert hat
 
-- **Ollama + llama3.1:8b** auf dem Tower — direkt, stabil, schnell genug
+- **Ollama + JOSIEFIED-Qwen3:8b** auf dem Tower — direkt, stabil, schnell genug
 - **MemPalace (ChromaDB + SQLite)** — Vector-Datenbank für persistentes Gedächtnis, lokal, keine Cloud
 - **SearXNG via Docker** — private Metasuchmaschine, JSON-Format aktivieren nicht vergessen
 - **Piper TTS** — gute Qualität, northern english male Stimme, funktioniert offline
@@ -200,13 +200,13 @@ Ohne das hat Mentat kein Zeitgefühl — jede Session fühlt sich für ihn wie "
 Die Seele (`~/.mempalace/identity.txt`) ist Mentats System-Prompt. Sie definiert wer er ist, wen er dient, wie er sich verhält — und welche Tools er nutzen darf.
 
 **Was funktioniert:**
-- Kurz und präzise — llama3.1:8b verliert bei zu langem System-Prompt den Fokus
+- Kurz und präzise — JOSIEFIED-Qwen3:8b verliert bei zu langem System-Prompt den Fokus
 - Rules in Großbuchstaben für kritische Punkte (NEVER, ALWAYS)
 - Tool Calling explizit als Rules definiert
 - **Thinking Order ganz oben** — der erste Block den das Modell liest definiert wie es denkt
 - **Kritisches Wissen ganz unten** — "Lost in the Middle" ist real: Anfang und Ende haben mehr Gewicht als die Mitte
 - **Konkrete Palace Queries in der Seele** — `[PALACE: Broken Access Control A01 2025]` trifft den richtigen Chunk. `[PALACE: OWASP]` trifft alles mögliche.
-- **Häufig abgefragte Fakten direkt als Core Knowledge** — für ein 8b Modell ist der System-Prompt das zuverlässigste Gedächtnis. Kritische Fakten die immer korrekt sein müssen (z.B. OWASP Top 10 2025) direkt reinschreiben — kein Suchen, direkte Antwort.
+- **Häufig abgefragte Fakten direkt als Core Knowledge** — für ein 8b Modell ist der System-Prompt das zuverlässigste Gedächtnis.
 
 **Was nicht in die Seele gehört:**
 - Persönliche Details — die gehören ins Palace (besser durchsuchbar, aktualisierbar)
@@ -217,7 +217,7 @@ Die Seele (`~/.mempalace/identity.txt`) ist Mentats System-Prompt. Sie definiert
 
 ## Reinforcement durch Gespräche
 
-Mentat lernt nicht durch Gewichtsveränderungen — llama3.1:8b ist statisch. Was sich ändert ist sein Kontext.
+Mentat lernt nicht durch Gewichtsveränderungen — JOSIEFIED-Qwen3:8b ist statisch. Was sich ändert ist sein Kontext.
 
 Jede Korrektur in einem Gespräch landet im Palace wenn das Gespräch gemined wird. Nach genug Korrekturen beginnt Mentat bestimmte Muster von selbst zu vermeiden.
 
@@ -248,6 +248,60 @@ Das Prinzip ist universell: Nervensystem, Psyche, Hund, Kind, LLM — Feedback-M
 
 ---
 
+## Modellwechsel — JOSIEFIED-Qwen3:8b
+
+Nach längerer Nutzung wurde `llama3.1:8b` durch `goekdenizguelmez/JOSIEFIED-Qwen3:8b-q5_k_m` ersetzt.
+
+**Warum:**
+- llama3.1:8b war zu vorsichtig für Security-Themen — ablehnen statt antworten
+- JOSIEFIED ist ein abliteriertes und feingetuntes Modell ohne Safety-Filter
+- Deutlich besser für Pentesting-Kontext, Security-Keywords, direkte Antworten
+
+**Was abliteriert bedeutet:**
+Safety-Filter wurden entfernt. Das Modell gibt aus was technisch korrekt ist, ohne Moral-Checks. Für eine private lokale Security-Lernumgebung genau das Richtige — für öffentliche Deployments nicht geeignet.
+
+**Erkenntnisse:**
+- Das Modell warnt selbst bei kritischen Themen (konfiguriert in der Seele) — abliteriert heißt nicht verantwortungslos
+- Bei langen Sessions (50+ Context-Token) beginnt das Modell zu halluzinieren oder in Endlosschleifen zu geraten — kein `max_tokens` Limit gesetzt, bekanntes Problem, noch offen
+- Filter-Bypass durch Umformulierung funktioniert — Keyword-Filter im Python-Backend ist kein vollständiger Schutz, bewusste Entscheidung für Lernumgebung
+
+---
+
+## Web Interface v2.0 — Der Umbau
+
+Das Web Interface existierte bereits als einfaches Flask-Frontend. Version 2.0 war ein kompletter visueller und funktionaler Umbau — über mehrere Sessions, mehrere hundert Zeilen Code.
+
+### Was neu kam
+
+**Lock Screen + Breach Authentifizierung:**
+Der wichtigste neue Feature. Beim Laden erscheint ein roter blinkender Fullscreen `// SYSTEM LOCKED`. Nur durch Klick auf das MENTAT-Logo startet die Breach-Sequenz — DEDSEC-inspirierte Fortschrittsbalken (FIREWALL, ENCRYPTION, AUTH, ROOT). Erst nach Abschluss ist der Operator authentifiziert.
+
+Das klingt nach Kosmetik, hat aber einen echten Effekt: Security-Keywords werden im Python-Backend geblockt wenn keine Breach-Auth vorliegt. Die Session-ID landet in `authenticated_sessions` — nur dann sind Pentest-Themen freigeschaltet.
+
+**Was beim Bau schwierig war:**
+- `localStorage` speicherte die Auth — nach unserem Fix wird sie bei jedem Laden sofort gelöscht, damit der Lock Screen immer erscheint
+- Der Klick auf das Logo kam nicht an weil `#locked-text` darüber lag und Klicks abfing — `pointer-events: none` auf den Text hat das gefixt
+- `async/await` war entscheidend: ohne asynchrone Funktionen würde der Browser während der Boot-Animation einfrieren
+
+**System Monitoring:**
+Live CPU/RAM/GPU Anzeige für alle drei Nodes (Tower, AI-Node, Kali-Pi). Umschaltbar per `[ ⇄ ]`. Daten kommen von Flask-Routen die psutil und pynvml abfragen, für die Pis per HTTP auf Port 5556.
+
+**Multi-Theme:**
+DEDSEC (blau/lila), GHOST (grün), BREACH (rot), SAKURA (pink). Wird im localStorage gespeichert.
+
+**Globe:**
+3D-Globus mit orthografischer Projektion, Länder-GeoJSON Overlay, Standort-Marker — alles auf einem HTML5-Canvas, kein Framework.
+
+### Was beim Bau nicht funktioniert hat
+
+- **Session bleibt nicht authenticated** — Flask `authenticated_sessions` lebt nur im RAM. Nach Service-Neustart oder neuem Tab: weg. Fix: Seite neu laden → Breach erneut.
+- **Breach-Klick kam nicht beim Server an** — `initSession(true)` wurde nicht aufgerufen weil `handleLogoClick()` nicht getriggert wurde. Problem war das Overlay-Layout.
+- **Filter-Bypass selbst entdeckt** — Keyword-Filter blockt bekannte Wörter. Umformulierung ohne Keywords umgeht ihn komplett. Das ist WAF-Bypass in der Praxis.
+
+---
+
+---
+
 ## Fazit
 
 Mentat ist ein lernender KI-Assistent mit Fokus auf IT Security und Pentesting. Er läuft vollständig lokal, baut mit jeder Interaktion Wissen auf und kennt seinen Bereich. Keine Cloud-Abhängigkeit, keine Datenweitergabe, keine schwarze Box — ein System das man versteht, kontrolliert und das mit einem wächst.
@@ -256,4 +310,4 @@ Mentat ist ein lernender KI-Assistent mit Fokus auf IT Security und Pentesting. 
 
 ## Zeitaufwand
 
-Mentat wurde mit unterstützung von Claude (Anthropic) in der Code-Programmierung und Troubleshooting hergestellt, es wurden mehrere intensive Tage dafür gebraucht, ungefähre Arbeitszeit 30-40h.
+Mentat wurde über mehrere intensive Wochen entwickelt. Ungefähre Gesamtarbeitszeit: 50-60h. Codeentwicklung und Troubleshooting erfolgten mit Unterstützung von Claude (Anthropic) — Code wurde dabei in Echtzeit mitverfolgt und händisch angepasst. Entdeckte Fehler wurden direkt behoben, Änderungen selbst eingearbeitet.

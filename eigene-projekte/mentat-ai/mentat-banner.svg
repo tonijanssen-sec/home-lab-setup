@@ -69,7 +69,7 @@
 
 <!-- Right side -->
 <text x="640" y="46" font-family="monospace" font-size="9" fill="#7c3aed99" text-anchor="end">MODEL</text>
-<text x="640" y="58" font-family="monospace" font-size="10" fill="#a855f7" text-anchor="end">llama3.2:3b</text>
+<text x="640" y="58" font-family="monospace" font-size="10" fill="#a855f7" text-anchor="end">JOSIEFIED-Qwen3:8b</text>
 <text x="640" y="72" font-family="monospace" font-size="9" fill="#7c3aed99" text-anchor="end">BERLIN</text>
 
 <!-- Pixel dots -->

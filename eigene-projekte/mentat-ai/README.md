@@ -6,7 +6,7 @@
 
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.x-blue?logo=python)
-![Ollama](https://img.shields.io/badge/model-llama3.1:8b-orange)
+![Ollama](https://img.shields.io/badge/model-JOSIEFIED--Qwen3:8b-orange)
 ![CUDA](https://img.shields.io/badge/CUDA-12%2B-76B900?logo=nvidia)
 ![Docker](https://img.shields.io/badge/docker-SearXNG-2496ED?logo=docker)
 ![MemPalace](https://img.shields.io/badge/memory-MemPalace-purple)
@@ -40,8 +40,8 @@ mentat-ai-node (RPi5 8GB + Hailo-10H NPU)
 ├── mentat-knowledge/               → Knowledge Base Dateien
 └── ~/.mempalace/identity.txt       → Mentats Seele
 
-Tower (Nobara KDE 43, RTX 3070)
-├── Ollama (Port 11434)             → llama3.1:8b
+Tower (Nobara KDE, RTX 3070)
+├── Ollama (Port 11434)             → goekdenizguelmez/JOSIEFIED-Qwen3:8b-q5_k_m
 ├── faster-whisper (CUDA)           → Speech-to-Text
 ├── Piper TTS                       → Text-to-Speech
 ├── openwakeword                    → Hey Mentat Wakeword (in Entwicklung)
@@ -54,7 +54,7 @@ Mentat hat vier Interfaces:
 - **`mentat`** — Textbasierter Chat, läuft direkt auf dem mentat-ai-node
 - **`mentat-voice`** — Sprach-Chat, läuft auf dem Tower (Mikrofon + Lautsprecher)
 - **`mentat-text`** — Text-Chat direkt vom Tower, selbes Palace
-- **Web Interface** — Browser-basiert, erreichbar via Tailscale vom iPhone (Port 5555)
+- **Web Interface** — Browser-basiert, erreichbar via Tailscale (Port 5555)
 
 ---
 
@@ -68,7 +68,68 @@ Mentat hat vier Interfaces:
 - **Wake-on-LAN** — `mentat` startet den Tower automatisch wenn er schläft
 - **Auto-Save + Auto-Mine** — Jedes Gespräch wird gespeichert und automatisch ins Palace geladen
 - **Zeitgefühl** — Aktuelles Datum und Uhrzeit werden automatisch bei jedem Start injiziert
-- **Web Interface** — Browser-basiert via Tailscale, auch vom iPhone nutzbar (Port 5555)
+- **Web Interface** — Browser-basiert via Tailscale, auch mobil nutzbar (Port 5555)
+
+---
+
+## Web Interface
+
+DEDSEC-inspiriertes Browser-Frontend für Mentat. Erreichbar im Heimnetz und via Tailscale.
+
+**Features:**
+- Lock Screen mit Breach-Authentifizierung (Klick auf MENTAT-Logo startet Breach-Sequenz)
+- Live System-Monitoring (CPU/RAM/GPU) für Tower, AI-Node und Kali-Pi
+- Netzwerk-Monitor mit Known/Unknown Device Erkennung
+- Rotierender 3D-Globus mit Standort-Marker
+- 4 Themes: DEDSEC, GHOST, BREACH, SAKURA
+- Palace/Web Suche mit Status-Anzeige unter Antworten
+- Session-basierte Authentifizierung — Security-Keywords nur nach Breach freigeschaltet
+
+**Setup:**
+```bash
+pip install flask psutil pynvml --break-system-packages
+
+# Als systemd Service einrichten
+mkdir -p ~/.config/systemd/user
+cat > ~/.config/systemd/user/mentat-web.service << 'SVCEOF'
+[Unit]
+Description=Mentat Web Interface
+After=network.target ollama.service
+
+[Service]
+ExecStart=/usr/bin/python3 /home/<YOUR_USER>/mentat_web.py
+Restart=always
+Environment=PATH=/home/<YOUR_USER>/.local/bin:/usr/bin:/bin
+
+[Install]
+WantedBy=default.target
+SVCEOF
+
+systemctl --user enable mentat-web
+systemctl --user start mentat-web
+```
+
+Erreichbar unter:
+- **Heimnetz:** `http://<TOWER_IP>:5555`
+- **Unterwegs:** `http://<TOWER_TAILSCALE_IP>:5555`
+
+> Tailscale-IP ermitteln: `tailscale ip`
+
+---
+
+## Screenshots
+
+**Lock Screen — System Locked**
+![Lock Screen](./Bildschirmfoto_20260419_165530.png)
+
+**Breach Authentication**
+![Breach](./Bildschirmfoto_20260419_165555.png)
+
+**Web Interface — DEDSEC Theme**
+![DEDSEC](./Bildschirmfoto_20260419_165610.png)
+
+**Web Interface — SAKURA Theme**
+![SAKURA](./Bildschirmfoto_20260419_165654.png)
 
 ---
 
@@ -163,7 +224,7 @@ docker restart searxng
 
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
-ollama pull llama3.1:8b
+ollama pull goekdenizguelmez/JOSIEFIED-Qwen3:8b-q5_k_m
 ```
 
 Ollama im Netzwerk erreichbar machen (`/etc/systemd/system/ollama.service.d/override.conf`):
@@ -207,15 +268,20 @@ echo "alias mentat-voice='python3 ~/mentat_voice.py'" >> ~/.bashrc
 
 ## Konfiguration
 
-Variablen in `mentat.py` und `mentat_voice.py` anpassen:
+Variablen in `mentat.py`, `mentat_voice.py` und `mentat_web.py` anpassen:
 
 ```python
+OLLAMA_URL         = "http://localhost:11434/api/chat"
+SEARXNG_URL        = "http://<NODE_IP>:8888/search"
+MODEL              = "goekdenizguelmez/JOSIEFIED-Qwen3:8b-q5_k_m"
+SSH_KEY            = "/home/<YOUR_USER>/.ssh/mentat_node"
+NODE_IP            = "<YOUR_NODE_USER>@<NODE_IP>"
+NODE_CHATS         = "/home/<YOUR_NODE_USER>/mentat-chats"
+NODE_PALACE        = "/home/<YOUR_NODE_USER>/mentat-palace"
+MEMPALACE_BIN      = "/home/<YOUR_NODE_USER>/.local/bin/mempalace"
 TOWER_IP           = "<TOWER_IP>"
 TOWER_MAC          = "<TOWER_MAC>"        # für Wake-on-LAN
-NODE_IP            = "pi@<NODE_IP>"
-OLLAMA_URL         = "http://<TOWER_IP>:11434/api/chat"
-SEARXNG_URL        = "http://<NODE_IP>:8888/search"
-MIC_DEVICE         = 13                   # prüfen: python3 -c "import sounddevice; print(sounddevice.query_devices())"
+MIC_DEVICE         = 0                    # prüfen: python3 -c "import sounddevice; print(sounddevice.query_devices())"
 MIC_SAMPLERATE     = 48000
 WAKEWORD_MODEL     = "/path/to/hey_mentat.onnx"
 WAKEWORD_THRESHOLD = 0.5
@@ -233,39 +299,72 @@ Enthält: Wer Mentat ist, wen er dient, wie er sich verhält, und welche Tools e
 
 ---
 
-## Web Interface (iPhone / Browser)
+## Changelog
 
-Mentat ist über jeden Browser erreichbar — zuhause über die lokale IP, unterwegs über Tailscale.
+### v2.0 — April 2026
 
+**Web Interface komplett überarbeitet:**
+
+- **Lock Screen** — Beim Laden erscheint ein roter blinkender Fullscreen `// SYSTEM LOCKED`. Klick auf das MENTAT-Logo startet die Breach-Sequenz. Schützt vor ungewolltem Zugriff, startet bei jedem Reload neu.
+- **Breach Authentifizierung** — DEDSEC-Style Sequenz mit 4 Fortschrittsbalken (FIREWALL, ENCRYPTION, AUTH, ROOT). Nur nach erfolgreichem Breach ist der Operator authentifiziert und Security-Keywords sind freigeschaltet.
+- **Session-basierte Auth** — Security-Keywords (pentest, exploit, nmap usw.) werden ohne Breach im Python-Backend geblockt, bevor sie Ollama erreichen. Filter-Bypass durch Umformulierung möglich — bewusste Designentscheidung für Lernumgebung.
+- **System Monitoring** — Live CPU/RAM/GPU Anzeige für alle drei Nodes. Umschaltbar per `[ ⇄ ]` Button direkt im Header.
+- **Netzwerk Monitor** — Known/Unknown Device Erkennung mit Warnanzeige. Daten vom letzten Nmap-Scan auf dem AI-Node.
+- **Multi-Theme** — DEDSEC (blau/lila), GHOST (grün), BREACH (rot), SAKURA (pink). Wird im localStorage gespeichert.
+- **Globe Background** — Rotierender 3D-Globus mit Länder-Outlines, konfigurierbarem Standort-Marker.
+- **Palace/Web Status** — Unter Mentats Antworten wird angezeigt ob er im Palace oder Web gesucht hat.
+- **Ollama Timeout** — Von 120s auf 180s erhöht (3 Versuche × 60s) für stabilere Antworten unter Last.
+- **Modell gewechselt** — Von `llama3.1:8b` auf `goekdenizguelmez/JOSIEFIED-Qwen3:8b-q5_k_m` (abliteriert, kein Safety-Filter, stärker für Security-Themen).
+
+### Bekannte Bugs / TODOs
+
+- Nach `[ END ]` wird der Lock Screen nicht wieder angezeigt — nur bei Seiten-Reload
+- Bei langen Sessions (50+ Context-Token) beginnt das Modell zu halluzinieren/loopen — kein `max_tokens` Limit gesetzt
+- `[PALACE:]` / `[WEB:]` Status Tag ist visuell zu unscheinbar — Verbesserung geplant
+
+---
+
+## Troubleshooting
+
+### Lock Screen erscheint nicht
 ```bash
-# Flask installieren (Tower)
-pip install flask --break-system-packages
+# Browser-Cache leeren
+Strg + Shift + R
 
-# Als systemd Service einrichten (startet automatisch mit dem Tower)
-mkdir -p ~/.config/systemd/user
-cat > ~/.config/systemd/user/mentat-web.service << 'SVCEOF'
-[Unit]
-Description=Mentat Web Interface
-After=network.target ollama.service
-
-[Service]
-ExecStart=/usr/bin/python3 /home/<USER>/mentat_web.py
-Restart=always
-Environment=PATH=/home/<USER>/.local/bin:/usr/bin:/bin
-
-[Install]
-WantedBy=default.target
-SVCEOF
-
-systemctl --user enable mentat-web
-systemctl --user start mentat-web
+# Oder localStorage manuell löschen
+# F12 → Application → Local Storage → mentat-auth entfernen
 ```
 
-Erreichbar unter:
-- **Heimnetz:** `http://<TOWER_IP>:5555`
-- **Unterwegs:** `http://<TOWER_TAILSCALE_IP>:5555`
+### "Authentication required" mitten in der Session
+- `authenticated_sessions` lebt nur im RAM — nach Flask-Neustart verloren
+- Fix: Seite neu laden → Breach erneut durchführen
+```bash
+systemctl --user status mentat-web   # Service-Status prüfen
+systemctl --user restart mentat-web  # Neustart falls nötig
+```
 
-> Tailscale-IP ermitteln: `tailscale ip`
+### Mentat antwortet nicht / Timeout
+```bash
+systemctl status ollama              # Ollama läuft?
+ping <TOWER_IP>                      # Tower erreichbar?
+wol <TOWER_MAC>                      # Tower aufwecken (WoL)
+ollama list                          # Modell geladen?
+ollama pull goekdenizguelmez/JOSIEFIED-Qwen3:8b-q5_k_m  # Modell neu laden
+```
+
+### Palace Suche liefert nichts
+```bash
+ssh -i ~/.ssh/mentat_node <NODE_USER>@<NODE_IP>   # SSH-Verbindung testen
+which mempalace                                    # MemPalace installiert?
+ls ~/mentat-palace                                 # Palace initialisiert?
+mempalace --palace ~/mentat-palace search "test"  # Suche testen
+```
+
+### Netzwerk Box zeigt "-- offline"
+```bash
+ssh <NODE_USER>@<NODE_IP> "cat /tmp/last_scan.json"   # Letzter Scan vorhanden?
+# N8N Network Monitor im Dashboard prüfen → http://<NODE_IP>:5678
+```
 
 ---
 
@@ -273,8 +372,8 @@ Erreichbar unter:
 
 Custom Wakeword via [openwakeword-trainer](https://github.com/lgpearson1771/openwakeword-trainer).
 
-**Status:** Modell vorhanden (`~/openwakeword-trainer/export/hey_mentat.onnx`), Score bis 0.74 aber instabil.
-**Plan:** 20-50 echte Stimm-Samples aufnehmen und nachtrainieren → deutlich stabiler.
+**Status:** Modell vorhanden (`~/openwakeword-trainer/export/hey_mentat.onnx`), Score ~0.81, Threshold 0.5. Noch nicht in `mentat_voice.py` integriert.  
+**Plan:** Integration + 20-50 echte Stimm-Samples für stabileres Training.
 
 ```bash
 cd ~/openwakeword-trainer
@@ -288,7 +387,12 @@ python train_wakeword.py --config configs/hey_mentat.yaml --from <schritt>  # Re
 ## Roadmap
 
 - [x] Tool Calling: Mentat sucht selbst im Palace via `[PALACE:]`
-- [ ] Wakeword "Hey Mentat" mit echten Stimm-Samples verbessern
+- [x] Web Interface mit Breach-Authentifizierung
+- [x] Live System-Monitoring für alle Nodes
+- [x] Netzwerk-Monitor mit Known/Unknown Erkennung
+- [ ] Wakeword "Hey Mentat" in mentat_voice.py integrieren
+- [ ] Nach `[ END ]` Lock Screen wieder anzeigen
+- [ ] `max_tokens` Limit setzen gegen Context-Overflow Loop
 - [ ] Wöchentlicher Kontext-Refresh via N8N + Telegram
 - [ ] Dokument-Mining: PDFs/Schulunterlagen ins Palace
 
@@ -296,4 +400,4 @@ python train_wakeword.py --config configs/hey_mentat.yaml --from <schritt>  # Re
 
 ## Tech Stack
 
-`llama3.1:8b` `Ollama` `MemPalace` `ChromaDB` `SearXNG` `Flask` `faster-whisper` `Piper TTS` `openwakeword` `Docker` `N8N` `Raspberry Pi 5` `Hailo-10H` `Wake-on-LAN` `Tailscale`
+`JOSIEFIED-Qwen3:8b` `Ollama` `Flask` `MemPalace` `ChromaDB` `SearXNG` `faster-whisper` `Piper TTS` `openwakeword` `Docker` `N8N` `Raspberry Pi 5` `Hailo-10H` `Wake-on-LAN` `Tailscale`
