@@ -3,7 +3,7 @@
 **Ziel:** Datenbank über unsanitized Input ausspähen und Passwort-Hashes extrahieren  
 **Security Level:** Low  
 **Tool:** Browser direkt (kein Burp nötig)  
-**Plattform:** DVWA auf Kali-Pi (`<kali-pi-ip/dvwa`)
+**Plattform:** DVWA auf Kali-Pi (`<kali-pi-ip>/dvwa`)
 
 ---
 
