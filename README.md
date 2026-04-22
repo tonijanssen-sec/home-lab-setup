@@ -47,6 +47,7 @@
   - [Heimnetz Übersicht](./networking/heimnetz-setup.md)
 - [DVWA Übungen](./dvwa/)
   - [Brute Force — Burp Suite Intruder](./dvwa/dvwa-brute-force.md)
+  - [SQL Injection — manueller Dump & Hash Cracking](./dvwa/dvwa-sqli.md)
 - [Eigene Projekte](./eigene-projekte/)
   - [N8N CVE Monitor](./eigene-projekte/cve-monitor/n8n-cve-monitor.md)
   - [Mentat Network Monitor](./eigene-projekte/network-monitor/n8n-network-monitor.md)

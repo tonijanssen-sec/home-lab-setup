@@ -110,7 +110,7 @@ Nach **Length** Spalte sortieren — das richtige Passwort hat eine **abweichend
 
 ```
 GET /dvwa/vulnerabilities/brute/?username=admin&password=password&Login=Login HTTP/1.1
-Host: 192.168.0.3
+Host: <kali-pi-ip>
 Cookie: PHPSESSID=3608c3e0e019324329a42781b6afa594; security=low
 ```
 
