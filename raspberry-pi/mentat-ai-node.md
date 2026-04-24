@@ -13,6 +13,7 @@ Lokaler, privater AI-Inference-Node auf Basis des Raspberry Pi 5 mit AI HAT+ 2 (
 | Netzteil | Raspberry Pi 27W USB-C |
 | Kühler | Berry Base Aktiver Kühler + Heatsink |
 | SD-Karte | 64GB A2 microSD |
+| Externe HDD | WD Elements 1TB USB 3.0, 2.5", 5400 RPM |
 
 ---
 
@@ -161,11 +162,174 @@ docker run -d \
   n8nio/n8n
 ```
 
-Erreichbar unter: `http://<MENTAT-IP>:5678`
+Erreichbar unter: `http://<NODE-IP>:5678`
+
+---
+
+## MemPalace & ChromaDB
+
+MemPalace ist das Gedächtnissystem von Mentat — alle Gespräche, Suchergebnisse und Wissensdateien landen hier als durchsuchbare Vektordatenbank.
+
+### Installation
+
+```bash
+pip install mempalace chromadb --break-system-packages
+```
+
+### Versionen (Stand April 2026)
+
+| Paket | Version |
+|---|---|
+| MemPalace | 3.3.2 |
+| ChromaDB | 1.5.8 |
+
+> Hinweis: MemPalace 3.3.x erfordert ChromaDB >= 1.5.4. Bei einem Upgrade von ChromaDB 0.6.x auf 1.5.x immer `mempalace migrate` ausführen — die Migration ist irreversibel, vorher Backup!
+
+### Upgrade-Ablauf
+
+```bash
+# Backup sichern
+cp -r ~/mentat-palace ~/mentat-palace-backup-$(date +%Y%m%d)
+
+# Upgrade
+pip install --upgrade mempalace chromadb --break-system-packages
+
+# Datenbank migrieren
+mempalace --palace ~/mentat-palace migrate
+
+# Status prüfen
+mempalace --palace ~/mentat-palace status
+```
+
+### Palace-Struktur
+
+Das Palace ist in zwei Wings aufgeteilt:
+
+```
+mentat_chats/        — Gesprächsprotokolle (technical, architecture, general, planning)
+mentat_knowledge/    — Wissensbasis
+  ├── pentesting/    — OWASP, Tools, Pentesting-Guides
+  ├── homelab/       — Mentat-System, N8N, NAS, Skripte
+  ├── school/        — SQL, PowerShell, Java, Windows Server
+  ├── networking/    — OSI, Netzwerktechnik
+  └── general/       — Linux-Rechte, Docker
+```
+
+### Palace initialisieren und befüllen
+
+```bash
+# Rooms aus Ordnerstruktur erkennen
+mempalace --palace ~/mentat-palace init ~/mentat-knowledge
+
+# Wissensdateien minen
+mempalace --palace ~/mentat-palace mine ~/mentat-knowledge
+
+# Gesprächslogs minen
+mempalace --palace ~/mentat-palace mine ~/mentat-chats --mode convos
+
+# Status prüfen
+mempalace --palace ~/mentat-palace status
+```
+
+### Active Learning
+
+Mentat analysiert nach jeder Session eigenständig das Gespräch und extrahiert erinnerungswürdige Fakten direkt ins Palace — ohne manuellen Mine-Lauf.
+
+Damit das gut funktioniert werden die gelernten Fakten als zusammenhängende Paragraphen gespeichert, nicht als isolierte Einzelsätze. Das verbessert die ChromaDB-Similarity-Scores deutlich.
+
+Beispiel eines generierten `learned_*.md` Eintrags:
+
+```markdown
+# Session Memory — 2026-04-24 20:14
+
+## What Toni and Mentat discussed
+
+Toni tested SQL injection (SQLi) on DVWA in a controlled environment and confirmed
+the attack worked as expected. This indicates practical experience with SQLi techniques
+applied to a vulnerable web application.
+```
+
+> Wichtig: `mentat-chats` und `mentat-knowledge` niemals löschen — sie sind Trainingsdaten für ein geplantes Fine-Tuning 2027.
+
+---
+
+## Externe HDD als primärer Storage
+
+Da Palace, Chats und Knowledge kontinuierlich wachsen, lohnt sich eine externe HDD statt der SD-Karte als primärer Storage. SD-Karten haben begrenzte Schreibzyklen und können bei Dauerbetrieb irgendwann ausfallen.
+
+### HDD formatieren
+
+```bash
+# Sicherstellen dass die HDD erkannt wird
+lsblk
+
+# Aushängen falls gemountet
+sudo umount /dev/sdX2
+
+# Mit ext4 formatieren
+sudo mkfs.ext4 /dev/sdX2
+```
+
+### Mountpunkt einrichten
+
+```bash
+sudo mkdir -p /mnt/mentat-hdd
+sudo mount /dev/sdX2 /mnt/mentat-hdd
+```
+
+### Daten auf HDD verschieben
+
+```bash
+sudo chown -R pi:pi /mnt/mentat-hdd
+
+# Daten kopieren
+rsync -av ~/mentat-palace ~/mentat-chats ~/mentat-knowledge /mnt/mentat-hdd/
+
+# Originale sichern (nach Überprüfung löschen)
+mv ~/mentat-palace ~/mentat-palace-backup
+mv ~/mentat-chats ~/mentat-chats-backup
+mv ~/mentat-knowledge ~/mentat-knowledge-backup
+
+# Symlinks setzen
+ln -s /mnt/mentat-hdd/mentat-palace ~/mentat-palace
+ln -s /mnt/mentat-hdd/mentat-chats ~/mentat-chats
+ln -s /mnt/mentat-hdd/mentat-knowledge ~/mentat-knowledge
+```
+
+### Auto-Mount beim Booten (fstab)
+
+UUID der HDD auslesen:
+
+```bash
+sudo blkid /dev/sdX2
+```
+
+In `/etc/fstab` eintragen:
+
+```
+UUID=<DEINE-UUID> /mnt/mentat-hdd ext4 defaults,nofail 0 2
+```
+
+> `nofail` stellt sicher dass der Pi auch ohne HDD normal bootet.
+
+### HDD-Gesundheit prüfen
+
+```bash
+sudo apt install smartmontools -y
+sudo smartctl -H /dev/sda
+```
+
+Erwarteter Output: `SMART overall-health self-assessment test result: PASSED`
 
 ---
 
 ## Backup
+
+### Automatisches NAS-Backup
+
+Ein tägliches Backup-Script (`backup-mentat.sh`) sichert den Node vollständig auf das NAS. Da Palace, Chats und Knowledge über Symlinks auf die HDD zeigen, folgt rsync automatisch den Links — die HDD-Daten werden mit gesichert.
+
+### Manuelles SD-Karten Image
 
 Vor größeren Änderungen vollständiges SD-Karten Image erstellen:
 
@@ -179,7 +343,7 @@ Vor größeren Änderungen vollständiges SD-Karten Image erstellen:
 
 ## Aktueller Status
 
-- ✅ Raspberry Pi OS Lite 64-bit
+- ✅ Raspberry Pi OS Lite 64-bit (Trixie)
 - ✅ SSH aktiv
 - ✅ Tailscale aktiv
 - ✅ Aktiver Kühler verbaut
@@ -189,7 +353,12 @@ Vor größeren Änderungen vollständiges SD-Karten Image erstellen:
 - ✅ qwen2.5-instruct:1.5b läuft (~8 Token/s)
 - ✅ Docker 29.3.1 installiert
 - ✅ N8N läuft auf Port 5678
-- ✅ SD-Karten Backup erstellt
+- ✅ MemPalace 3.3.2 + ChromaDB 1.5.8
+- ✅ Palace-Struktur: pentesting / homelab / school / networking / general
+- ✅ Active Learning aktiv
+- ✅ WD Elements 1TB HDD als primärer Storage (ext4, auto-mount, SMART: PASSED)
+- ✅ Symlinks: mentat-palace / mentat-chats / mentat-knowledge → HDD
+- ✅ NAS-Backup sichert HDD-Daten täglich mit
 
 ---
 
@@ -204,4 +373,4 @@ Der Hailo-10H ist ein dedizierter Neural Processing Unit (NPU) mit 8GB eigenem R
 
 ---
 
-> ⚠️ Dieses Repository enthält keine echten IPs, Passwörter oder sensiblen Netzwerkdaten.
+> ⚠️ Dieses Repository enthält keine echten IPs, Tokens, Passwörter oder sensiblen Netzwerkdaten.
