@@ -29,6 +29,7 @@
 | Huawei Laptop | Windows 11 + Kali Live USB | Schule, FISI, Pentesting |
 | QNAP TS-216G | QTS 5.2 | NAS, Backup, RAID 1 |
 
+
 ---
 
 ## Inhalt
@@ -49,6 +50,7 @@
   - [Brute Force — Burp Suite Intruder](./dvwa/dvwa-brute-force.md)
   - [SQL Injection — manueller Dump & Hash Cracking](./dvwa/dvwa-sqli.md)
 - [Eigene Projekte](./eigene-projekte/)
+  - [Nextcloud auf Ubuntu 24.04](./eigene-projekte/nextcloud/nextcloud-setup.md)
   - [N8N CVE Monitor](./eigene-projekte/cve-monitor/n8n-cve-monitor.md)
   - [Mentat Network Monitor](./eigene-projekte/network-monitor/n8n-network-monitor.md)
     - [network-monitor.sh — Shell Skript](./eigene-projekte/network-monitor/network-monitor.sh)
@@ -73,7 +75,7 @@ Vorbereitung auf Praktikum bei BerlinCert (IT-Security/Pentesting) und langfrist
 
 ## Tools & Technologien
 
-`Kali Linux` `Nobara Linux` `Docker` `N8N` `Hailo-10H` `Metasploit` `Burp Suite` `DVWA` `Tailscale` `Samba` `TryHackMe` `Bettercap` `Tor` `nmap` `arp-scan` `Ollama` `llama3.1:8b` `MemPalace` `SearXNG` `Flask` `Whisper` `Piper TTS` `openwakeword` `rsync` `QNAP QTS` `Wake-on-LAN`
+`Kali Linux` `Nobara Linux` `Windows Server 2025` `Docker` `N8N` `Hailo-10H` `Metasploit` `Burp Suite` `DVWA` `Tailscale` `Samba` `TryHackMe` `Bettercap` `Tor` `nmap` `arp-scan` `Ollama` `llama3.1:8b` `MemPalace` `SearXNG` `Flask` `Whisper` `Piper TTS` `openwakeword` `rsync` `QNAP QTS` `Wake-on-LAN` `Nextcloud` `Apache` `MariaDB` `Let's Encrypt`
 
 ---
 
